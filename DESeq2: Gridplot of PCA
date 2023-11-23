@@ -1,0 +1,22 @@
+#To get to this point you need to have the countdata filtered and have a coldata
+
+genVstFilPca<- prcomp(t(vstFil), scale=TRUE)
+
+vstFil<- vst(as.matrix(countdata_main_filtered))
+
+# Run PCA
+genVstFilPca<- prcomp(t(vstFil), scale=TRUE)
+
+#Measure the variance and plot the variance of the data that 
+# is explained by each PC dimension
+pcVar<- genVstFilPca$sdev^2
+barplot(pcVar, names=colnames(genVstFilPca$x), ylab="Var")
+
+# Measure the variance percentage and 
+# plot the percentage of the variance within the data that 
+# is explained by each PC dimension
+varPerc<- 100*pcVar/sum(pcVar)
+barplot(varPerc, names=colnames(genVstFilPca$x), ylab="Var %")
+
+#Make the PCA gridplot
+pairs(genVstFilPca$x[,1:6], col= coldata_main$Color2, main="Principal components analysis", pch=16)
