@@ -1,0 +1,41 @@
+#Data normalization
+#Run the following commands to apply the Variance Stabilizing Transformation (VST) of the 
+#DESeq2 package on ‘fil’ (i.e. the filtered count data).
+#Now plot the standard deviation of the expression of the genes (across all samples) vs their 
+#mean expression. Make the plot for the VST transformed and the filtered untransformed 
+#data (i.e. ‘fil’).
+
+#PCA analysis
+#Now we run PCA analysis (on the VST transformed data) to decrease the dimensionality of 
+#the genes. Run the following commands :
+
+library(DESeq2)
+vstFil<- vst(as.matrix(fil))
+
+#Plot VSTnormalization_sd_vs_mean: 
+#Plot the standard deviation of the expression of the genes (Y-axis) vs the mean of the 
+#expression of the genes (X-axis) for the VST transformed and filtered read count data
+#(i.e. ‘fil’). Save the figures as a “VSTnormalization_sd_vs_mean.pdf” file. Functions 
+#pdf(), par() (and its mfrow parameter), rowMeans(), apply(), sd(), plot(), 
+#dev.off() may be useful to you. As an alternative, you can also use any standard 
+#deviation vs mean expression plotting function that is supported by other R packages 
+#(just remember to save it as PDF). 
+
+# Run PCA on transpose of the 
+genVstFilPca<- prcomp(t(vstFil), scale=TRUE)
+
+#Measure the variance and plot the variance of the data that 
+# is explained by each PC dimension
+
+pcVar<- genVstFilPca$sdev^2
+pdf("PC_Var.pdf")
+barplot(pcVar, names=colnames(genVstFilPca$x), ylab="Var")
+dev.off()
+
+# Measure the variance percentage and 
+# plot the percentage of the variance within the data that 
+# is explained by each PC dimension
+varPerc<- 100*pcVar/sum(pcVar)
+pdf("PC_Var_Perc.pdf")
+barplot(varPerc, names=colnames(genVstFilPca$x), ylab="Var %")
+dev.off()
