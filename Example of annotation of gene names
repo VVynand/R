@@ -1,0 +1,19 @@
+library(biomaRt)
+ensembl<-useMart("ENSEMBL_MART_ENSEMBL", 
+host="http://grch37.ensembl.org", dataset="hsapiens_gene_ensembl")
+annoGen<- biomaRt::getBM( attributes=c("ensembl_gene_id", 
+ "external_gene_name", "gene_biotype", 
+ "chromosome_name", "start_position", "end_position"), 
+ filters = "ensembl_gene_id", 
+ values = unique(as.character(rownames(cntDat))), 
+ mart=ensembl, uniqueRows = TRUE)
+
+# Are there the same number of genes in the count and 
+# gene-annotation data ?
+
+nrow(annoGen)== nrow(cntDat)
+
+# Are the orders of the genes similar in the count and 
+# gene-annotation data ?
+
+table(rownames(cntDat)==annoGen$"ensembl_gene_id")
